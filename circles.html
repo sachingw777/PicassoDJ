@@ -1,0 +1,57 @@
+<!-- picasoooodddeeeejayyyyyyyyyyyyyyy -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PICASSODJ</title>
+	<script type="text/javascript" src="paper-full.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/1.1.28/howler.js"></script>
+	<script type="text/javascript" src="data.js"></script>
+	<link rel="stylesheet" type="text/css" href="circles.css">
+
+<!-- onKeyDown():-
+	random() function is used to generate random points. 
+	predetermined circle diameter of 500.
+	newCircle is pushed into circles array.
+-->
+
+<!-- onFrame:-
+	scaling down each frame by a factor of 0.9. Since there are so many frames, it scales down to 0 pretty quickly. 
+	increasing color value by 1. changes color.
+
+	if area is less than 1. then we remove that circle from the array and reduce the size of the array to keep it space efficient. Cause crazy people are gonna play with this for god knows how long and this could fill up to really large sizes.
+
+	script ends. all this happens in canvas. which is set with a hack of body,height of 100% & margin 0, to occupy full screen.
+-->
+	<script type="text/paperscript" canvas="myCanvas">
+
+		var circles = [];
+
+		function onKeyDown(event) {
+			if(keyData[event.key]){
+				var maxPoint = new Point(view.size.width, view.size.height);
+				var randomPoint = Point.random();
+				var point = maxPoint * randomPoint;
+				var newCircle = new Path.Circle(point, 500)
+				newCircle.fillColor = keyData[event.key].color;
+				keyData[event.key].sound.play(); <!-- keyData[] defined in data.js. Has keys(A-Z) mapped with sounds & colors.-->
+				circles.push(newCircle);
+			}
+		}
+
+		function onFrame(event){
+			for(var i = 0; i < circles.length; i++){
+				circles[i].scale(0.9);
+				circles[i].fillColor.hue += 1;
+
+				if(circles[i].area < 1){
+					circles[i].remove();
+					circles.splice(i, 1);
+				}
+			}
+	    }
+	</script>
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+</body>
+</html>
